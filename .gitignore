@@ -1,0 +1,7 @@
+
+.metadata/**
+Inreptava/.settings/**
+Inreptava/.classpath
+Inreptava/.project
+Inreptava/bin/**
+Inreptava/fe/package-lock.json
