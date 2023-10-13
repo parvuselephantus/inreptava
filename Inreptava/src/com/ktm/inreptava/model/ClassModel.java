@@ -59,7 +59,7 @@ public class ClassModel implements PackageChild {
 		}
 	}
 	
-	public Set<ClassModel> listResponseClasses() {
+	public List<ClassModel> listResponseClasses() {
 		Set<ClassModel> controllers = new HashSet<ClassModel>();
 		if (javaClass != null) {
 			javaClass.getMethods().stream()
@@ -67,7 +67,7 @@ public class ClassModel implements PackageChild {
 				.map(m -> parent.getClass(m.getReturnType().getQualifiedName()))
 				.forEach(classModel -> controllers.add(classModel));
 		}
-		return controllers;
+		return controllers.stream().toList();
 	}
 	
 	@Override
