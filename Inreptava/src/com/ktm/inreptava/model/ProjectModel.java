@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ProjectModel {
 	private PackageModel model;
@@ -32,5 +33,9 @@ public class ProjectModel {
 		List<ClassModel> controllers = new LinkedList<ClassModel>();
 		model.getClasses(controllers, c -> c.getJavaClass() != null && c.getJavaClass().getAnnotation("RestController") != null);
 		return controllers;
+	}
+	
+	public Stream<ClassModel> getClasses() {
+		return model.getClasses();
 	}
 }

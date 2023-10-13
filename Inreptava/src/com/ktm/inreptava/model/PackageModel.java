@@ -2,6 +2,7 @@ package com.ktm.inreptava.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PackageModel implements PackageChild {
 	private PackageModel parent;
@@ -39,10 +40,14 @@ public class PackageModel implements PackageChild {
 	public void getClasses(List<ClassModel> controllerList, ClassRule rule) {
 		children.stream().forEach(c -> c.getClasses(controllerList, rule));
 	}
+	@Override
+	public void getClasses(List<ClassModel> collectorList) {
+		children.stream().forEach(c -> c.getClasses(collectorList));
+	}
 
 	public ClassModel getClass(String qualifiedName) {
 		if (parent != null) return parent.getClass(qualifiedName);
-		String[] path = qualifiedName.split(".");
+		String[] path = qualifiedName.split("\\.");
 		PackageChild p = this;
 		for (int i = 0; i < path.length; i++) {
 			p = ((PackageModel) p).getChild(path[i]);
@@ -52,5 +57,11 @@ public class PackageModel implements PackageChild {
 
 	private PackageChild getChild(String name) {
 		return children.stream().filter(child -> child.getName().equals(name)).findAny().orElse(null);
+	}
+
+	public Stream<ClassModel> getClasses() {
+		List<ClassModel> classes = new LinkedList<>();
+		children.stream().forEach(c -> c.getClasses(classes));
+		return classes.stream();
 	}
 }

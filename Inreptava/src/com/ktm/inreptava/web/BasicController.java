@@ -25,9 +25,15 @@ public class BasicController {
 	
 	@RequestMapping(method=RequestMethod.GET, value = "/scan", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetStatusResponse handleScan(Principal principal) {
-		projects.scan();
-		projects.getControllers();
+//		projects.scan();
+		projects.getResponseClasses();
 		return GetStatusResponse.create("AAAAAAAAA");
     }
 
+	@RequestMapping(method=RequestMethod.GET, value = "/getClasses", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GetStatusResponse handleGetClasses(Principal principal) {
+//		projects.scan();
+		projects.getClasses();
+		return GetStatusResponse.create("AAAAAAAAA");
+    }
 }

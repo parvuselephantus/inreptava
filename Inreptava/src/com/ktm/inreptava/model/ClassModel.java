@@ -40,6 +40,10 @@ public class ClassModel implements PackageChild {
 	public void getClasses(List<ClassModel> controllerList, ClassRule rule) {
 		if (rule.is(this)) controllerList.add(this);
 	}
+	@Override
+	public void getClasses(List<ClassModel> collectorList) {
+		collectorList.add(this);
+	}
 	
 
 	public void scan(File f) throws FileNotFoundException {
@@ -60,8 +64,8 @@ public class ClassModel implements PackageChild {
 		if (javaClass != null) {
 			javaClass.getMethods().stream()
 				.filter(m -> m.hasAnnotation("RequestMapping") && !m.getReturnType().getName().equals("void"))
-				.map(m -> parent.getClass(m.getReturnType().getQualifiedName()));
-				
+				.map(m -> parent.getClass(m.getReturnType().getQualifiedName()))
+				.forEach(classModel -> controllers.add(classModel));
 		}
 		return controllers;
 	}

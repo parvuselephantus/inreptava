@@ -6,4 +6,5 @@ public interface PackageChild {
 	public PackageModel getParent();
 	public String getName();
 	public void getClasses(List<ClassModel> controllerList, ClassRule rule);
+	public void getClasses(List<ClassModel> controllerList);
 }
