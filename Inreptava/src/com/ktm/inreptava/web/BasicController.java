@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ktm.inreptava.ProjectService;
+import com.ktm.inreptava.web.api.GetClassesResponse;
 import com.ktm.inreptava.web.api.GetStatusResponse;
 
 @CrossOrigin(maxAge = 1)
@@ -30,10 +31,8 @@ public class BasicController {
 		return GetStatusResponse.create("AAAAAAAAA");
     }
 
-	@RequestMapping(method=RequestMethod.GET, value = "/getClasses", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetStatusResponse handleGetClasses(Principal principal) {
-//		projects.scan();
-		projects.getClasses();
-		return GetStatusResponse.create("AAAAAAAAA");
+	@RequestMapping(method=RequestMethod.GET, value = "/classes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GetClassesResponse handleClasses(Principal principal) {
+		return GetClassesResponse.create(projects.getClasses());
     }
 }

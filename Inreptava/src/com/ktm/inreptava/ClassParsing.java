@@ -10,14 +10,14 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
 public class ClassParsing {
-	private String setterName(FieldSource<JavaClassSource> field) {
+	private static String setterName(FieldSource<JavaClassSource> field) {
 		return "set" + Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
 	}
-	private String getterName(FieldSource<JavaClassSource> field) {
+	public static String getterName(FieldSource<JavaClassSource> field) {
 		return ((field.getType().getSimpleName().equals("boolean") || field.getType().getSimpleName().equals("boolean")) ? "is" : "get")
 				+ Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
 	}
-	private MethodSource<JavaClassSource> getGetter(JavaClassSource javaClass, FieldSource<JavaClassSource> field) {
+	private static MethodSource<JavaClassSource> getGetter(JavaClassSource javaClass, FieldSource<JavaClassSource> field) {
 		String getterName = getterName(field);
 		return javaClass.getMethods().stream().filter(m -> 
 				   m.getName().equals(getterName)
@@ -80,6 +80,27 @@ public class ClassParsing {
 		fos.write(trgClass.toString().getBytes());
 		fos.flush();
 		fos.close();
+	}
+	
+	public static void checkGetterAndSetter(JavaClassSource trg, FieldSource<JavaClassSource> field) {
+		String getterName = getterName(field);
+		if (!trg.hasMethodSignature(getterName)) {
+			trg.addMethod()
+				.setReturnType(field.getType())
+				.setName(getterName)
+				.setPublic()
+				.setBody("return " + field.getName() + ";");
+		}
+		
+		String setterName = setterName(field);
+		if (!trg.hasMethodSignature(setterName)) {
+			trg.addMethod()
+				.setReturnType("void")
+				.setName(setterName)
+				.setPublic()
+				.setBody("this." + field.getName() + " = " + field.getName()  + " ;")
+				.addParameter(field.getType().getQualifiedNameWithGenerics(), field.getName());
+		}
 	}
 	
 	public static void main(String[] args) {
