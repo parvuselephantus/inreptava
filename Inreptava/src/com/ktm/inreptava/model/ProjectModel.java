@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 public class ProjectModel {
 	private PackageModel model;
-	
 
 	public void scan(File srcFolder) throws FileNotFoundException {
 		model = new PackageModel(null, "root");
@@ -16,7 +15,7 @@ public class ProjectModel {
 	}
 
 	public void scan(File folder, PackageModel parent) throws FileNotFoundException {
-		for (File f: folder.listFiles()) {
+		for (File f : folder.listFiles()) {
 			if (f.isDirectory()) {
 				PackageModel p = new PackageModel(parent, f.getName());
 				parent.addChild(p);
@@ -31,10 +30,15 @@ public class ProjectModel {
 
 	public List<ClassModel> getControllers() {
 		List<ClassModel> controllers = new LinkedList<ClassModel>();
-		model.getClasses(controllers, c -> c.getJavaClass() != null && c.getJavaClass().getAnnotation("RestController") != null);
+		model.getClasses(controllers,
+				c -> c.getJavaClass() != null && c.getJavaClass().getAnnotation("RestController") != null);
 		return controllers;
 	}
-	
+
+	public ClassModel getClass(String[] fullClassName) {
+		return model.getClass(fullClassName, 0);
+	}
+
 	public Stream<ClassModel> getClasses() {
 		return model.getClasses();
 	}

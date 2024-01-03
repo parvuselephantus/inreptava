@@ -45,6 +45,23 @@ public class PackageModel implements PackageChild {
 		children.stream().forEach(c -> c.getClasses(collectorList));
 	}
 
+	public ClassModel getClass(String[] fullClassName, int indexNo) {
+		for (int i = 0; i < children.size(); i++) {
+			PackageChild child = children.get(i);
+			if (child.getName().equals(fullClassName[indexNo])) {
+				if (indexNo == fullClassName.length-1) {
+					if (child instanceof ClassModel) {
+						return (ClassModel) child;
+					} else {
+						return null;
+					}
+				} else {
+					return ((PackageModel) child).getClass(fullClassName, indexNo+1);
+				}
+			}
+		}
+		return null;
+	}
 	public ClassModel getClass(String qualifiedName) {
 		if (parent != null) return parent.getClass(qualifiedName);
 		String[] path = qualifiedName.split("\\.");
@@ -63,5 +80,16 @@ public class PackageModel implements PackageChild {
 		List<ClassModel> classes = new LinkedList<>();
 		children.stream().forEach(c -> c.getClasses(classes));
 		return classes.stream();
+	}
+
+	public String getFullName() {
+		if (getParent() == null) {
+			return "";
+		}
+		String parName = getParent().getFullName();
+		if (parName.equals("")) {
+			return name;
+		}
+		return  parName + "." + getName();
 	}
 }

@@ -1,10 +1,12 @@
 package com.ktm.inreptava.web;
 
+import java.io.IOException;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ktm.inreptava.ProjectService;
 import com.ktm.inreptava.web.api.GetClassesResponse;
 import com.ktm.inreptava.web.api.GetStatusResponse;
+import com.ktm.inreptava.web.api.SetMethodRequest;
 
-@CrossOrigin(maxAge = 1)
+@CrossOrigin(maxAge = 1, origins = "*")
 @RestController
 public class BasicController {
 	@Autowired
@@ -35,4 +38,10 @@ public class BasicController {
     public GetClassesResponse handleClasses(Principal principal) {
 		return GetClassesResponse.create(projects.getClasses());
     }
+	
+	@RequestMapping(method=RequestMethod.POST, value = "/setMethod", produces = MediaType.APPLICATION_JSON_VALUE)
+	public GetStatusResponse setMethod(Principal principal, @RequestBody SetMethodRequest request) throws IOException {
+		projects.setMethod(request);
+		return GetStatusResponse.create("");
+	}
 }

@@ -2,11 +2,9 @@ package com.ktm.inreptava;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.jboss.forge.roaster.model.source.FieldSource;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.ktm.inreptava.model.ClassModel;
 import com.ktm.inreptava.model.ProjectModel;
+import com.ktm.inreptava.web.api.SetMethodRequest;
 
 @Service
 public class ProjectService {
@@ -60,18 +59,23 @@ public class ProjectService {
 				}
 			}
 			
-			ClassParsing.checkGetterAndSetter(trg, field);
+			ClassParsing.checkGetterAndSetter(trgClass, field);
 		});
-	}
-	
-	private String getterCommand(FieldSource<JavaClassSource> field) {
-		return "\t\tret." + field.getName() + " = obj." + ClassParsing.getterName(field) + ";";
 	}
 	
 	private void manageBuild(JavaClassSource trg) {
 		MethodSource<JavaClassSource> method = trg.getMethod("build");
 		List<String> cmds = Arrays.asList(method.getBody().split(";"));
 		method.setBody(String.join(";\r\n\t\t", cmds));
+	}
+
+	public void setMethod(SetMethodRequest request) throws IOException {
+		String[] fullClassName = request.getFullClassName().split("\\.");
+		ClassModel clazz = projectModel.getClass(fullClassName);
+		if (clazz != null) {
+			clazz.changeMethod(request.getMethod(), request.isAdd(), request.getField());
+			clazz.writeToFile();
+		}
 	}
 
 }
